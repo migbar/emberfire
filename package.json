@@ -40,7 +40,7 @@
   "browserify-shim": {
     "ember": "global:Ember",
     "ember-data": "global:DS",
-    "firebase": "global:Firebase"
+    "firebase": "global:firebase"
   },
   "dependencies": {
     "chalk": "1.1.0",

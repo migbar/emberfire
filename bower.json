@@ -30,9 +30,8 @@
     "package.json"
   ],
   "dependencies": {
-    "firebase": "2.x.x",
-    "ember-data": ">=1.13.6",
-    "sinon-as-promised": "^4.0.0"
+    "firebase": "3.x.x",
+    "ember-data": ">=1.13.6"
   },
   "devDependencies": {
     "ember": "2.0.2",
@@ -49,7 +48,7 @@
     "normalize-css": "3.0.3",
     "sinon": "http://sinonjs.org/releases/sinon-1.16.1.js",
     "mockfirebase": "0.11.0",
-    "sinon-as-promised": "^4.0.0"
+    "sinon-as-promised": "4.0.0"
   },
   "resolutions": {
     "ember": "2.0.2"

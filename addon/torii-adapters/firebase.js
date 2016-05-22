@@ -1,19 +1,26 @@
 import Ember from 'ember';
 
 export default Ember.Object.extend({
-
+  firebase: Ember.inject.service(),
 
   /**
    * Extacts session information from authentication response
    *
-   * @param {object} authentication - hash containing response payload
+   * @param {object} authResult
    * @return {Promise}
    */
-  open(authentication) {
+  open(authResult) {
+    console.log('open', authResult);
+    let currentUser = authResult.user;
+
+    // anon only gives user back
+    if (!authResult.user) {
+      currentUser = authResult;
+    }
     return Ember.RSVP.resolve({
-      provider: authentication.provider,
-      uid: authentication.uid,
-      currentUser: authentication[authentication.provider]
+      provider: this.extractProviderId_(authResult),
+      uid: currentUser.uid,
+      currentUser: currentUser
     });
   },
 
@@ -24,15 +31,14 @@ export default Ember.Object.extend({
    * @return {Promise}
    */
   fetch() {
-    let firebase = this.get('firebase');
-    return new Ember.RSVP.Promise((resolve, reject) => {
-      let auth = firebase.getAuth();
-      if (!auth) {
-        reject("No session available");
-      } else {
-        resolve(this.open(auth));
-      }
-    }, "Firebase Torii Adapter#fetch Firebase session");
+    let auth = this.get('firebase').auth();
+    let currentUser = auth.currentUser;
+    console.log('fetch', currentUser);
+    if (currentUser) {
+      return Ember.RSVP.resolve(this.open({ user: currentUser }));
+    } else {
+      return Ember.RSVP.reject('No session available');
+    }
   },
 
 
@@ -42,8 +48,26 @@ export default Ember.Object.extend({
    * @return {Promise}
    */
   close() {
-    let firebase = this.get('firebase');
-    firebase.unauth();
-    return Ember.RSVP.resolve();
+    return this.get('firebase').auth().signOut();
+  },
+
+  /**
+   * Extracts the provider id from the auth payload
+   *
+   * @param {!Object} authResult
+   * @private
+   */
+  extractProviderId_(authResult) {
+    if (authResult.user.isAnonymous) {
+      return 'anonymous';
+    }
+
+    if (authResult.providerId) {
+      return authResult.providerId;
+    }
+
+    if (authResult.user.providerData && authResult.user.providerData.length) {
+      return authResult.user.providerData[0].providerId;
+    }
   }
 });
