@@ -9,14 +9,14 @@ export default Ember.Route.extend({
           provider: provider,
           email: emailOrToken,
           password: password
-        })
+        });
       } else if (provider === 'custom') {
         authPromise = this.get('session').open('firebase', {
           provider: provider,
           token: emailOrToken
-        })
+        });
       } else {
-        authPromise = this.get('session').open('firebase', { provider: provider })
+        authPromise = this.get('session').open('firebase', { provider: provider });
       }
 
       authPromise.then(result => console.log('session.open result:', result))
