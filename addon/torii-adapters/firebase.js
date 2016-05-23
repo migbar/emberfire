@@ -10,13 +10,8 @@ export default Ember.Object.extend({
    * @return {Promise}
    */
   open(authResult) {
-    console.log('open', authResult);
     let currentUser = authResult.user;
 
-    // anon only gives user back
-    if (!authResult.user) {
-      currentUser = authResult;
-    }
     return Ember.RSVP.resolve({
       provider: this.extractProviderId_(authResult),
       uid: currentUser.uid,
@@ -33,7 +28,6 @@ export default Ember.Object.extend({
   fetch() {
     let auth = this.get('firebase').auth();
     let currentUser = auth.currentUser;
-    console.log('fetch', currentUser);
     if (currentUser) {
       return Ember.RSVP.resolve(this.open({ user: currentUser }));
     } else {
@@ -62,12 +56,10 @@ export default Ember.Object.extend({
       return 'anonymous';
     }
 
-    if (authResult.providerId) {
-      return authResult.providerId;
-    }
-
     if (authResult.user.providerData && authResult.user.providerData.length) {
       return authResult.user.providerData[0].providerId;
     }
+
+    return 'unknown';
   }
 });

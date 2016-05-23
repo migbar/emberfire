@@ -38,7 +38,8 @@ export default Ember.Object.extend(Waitable, {
         return this.waitFor_(auth.signInWithCustomToken(options.token));
 
       case 'anonymous':
-        return this.waitFor_(auth.signInAnonymously());
+        return this.waitFor_(auth.signInAnonymously())
+            .then((user) => { return {user}; }); // normalize payload
 
       // oauth providers e.g. 'twitter'
       default:
@@ -48,7 +49,6 @@ export default Ember.Object.extend(Waitable, {
           options.options.scopes.forEach((s) => provider.addScope(s));
         }
 
-        console.log('auth with popup', providerId);
         if (options.redirect === true) {
           // promise will never resolve unless there is an error (due to redirect)
           return this.waitFor_(auth.signInWithRedirect(provider));
@@ -67,7 +67,6 @@ export default Ember.Object.extend(Waitable, {
   waitFor_(promise) {
     this._incrementWaiters();
     return promise.then((result) => {
-      console.log('auth result', result);
       this._decrementWaiters();
       return result;
     }).catch((err) => {

@@ -20,7 +20,7 @@ module.exports = function(environment) {
       'font-src': '\'self\' fonts.gstatic.com',
       'frame-src': '\'self\' https://*.firebaseapp.com',
       'img-src': '\'self\' *.gravatar.com s3.amazonaws.com',
-      'connect-src': '\'self\' wss://*.firebaseio.com https://www.googleapis.com'
+      'connect-src': '\'self\' wss://*.firebaseio.com https://*.googleapis.com'
     },
     EmberENV: {
       EXTEND_PROTOTYPES: false,

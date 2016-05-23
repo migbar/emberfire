@@ -27,7 +27,7 @@ module.exports = {
       return self.addToConfig('firebase', '{ databaseURL: \'' + firebaseUrl + '\' }');
     })
     .then(function () {
-      return self.addToConfig('contentSecurityPolicy', '{ \'connect-src\': "\'self\' https://www.googleapis.com wss://*.firebaseio.com" }');
+      return self.addToConfig('contentSecurityPolicy', '{ \'connect-src\': "\'self\' https://*.googleapis.com wss://*.firebaseio.com" }');
     })
     .then(function () {
       var output = EOL;
