@@ -66,6 +66,6 @@ export default Ember.Object.extend({
       return user.providerData[0].providerId;
     }
 
-    return 'unknown';
+    return 'custom';
   }
 });
