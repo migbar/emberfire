@@ -6,16 +6,14 @@ export default Ember.Object.extend({
   /**
    * Extacts session information from authentication response
    *
-   * @param {object} authResult
+   * @param {!firebase.User} user
    * @return {Promise}
    */
-  open(authResult) {
-    let currentUser = authResult.user;
-
+  open(user) {
     return Ember.RSVP.resolve({
-      provider: this.extractProviderId_(authResult),
-      uid: currentUser.uid,
-      currentUser: currentUser
+      provider: this.extractProviderId_(user),
+      uid: user.uid,
+      currentUser: user
     });
   },
 
@@ -26,13 +24,21 @@ export default Ember.Object.extend({
    * @return {Promise}
    */
   fetch() {
-    let auth = this.get('firebase').auth();
-    let currentUser = auth.currentUser;
-    if (currentUser) {
-      return Ember.RSVP.resolve(this.open({ user: currentUser }));
-    } else {
-      return Ember.RSVP.reject('No session available');
-    }
+    return new Ember.RSVP.Promise((resolve, reject) => {
+      let auth = this.get('firebase').auth();
+      const unsub = auth.onAuthStateChanged((user) => {
+        unsub();
+        if (!user) {
+          reject(new Error('No session available'));
+          return;
+        }
+        resolve(this.open(user));
+      },
+      (err) => {
+        unsub();
+        reject(err);
+      });
+    });
   },
 
 
@@ -46,18 +52,18 @@ export default Ember.Object.extend({
   },
 
   /**
-   * Extracts the provider id from the auth payload
+   * Extracts the provider id from the firebase user
    *
-   * @param {!Object} authResult
+   * @param {!firebase.User} user
    * @private
    */
-  extractProviderId_(authResult) {
-    if (authResult.user.isAnonymous) {
+  extractProviderId_(user) {
+    if (user.isAnonymous) {
       return 'anonymous';
     }
 
-    if (authResult.user.providerData && authResult.user.providerData.length) {
-      return authResult.user.providerData[0].providerId;
+    if (user.providerData && user.providerData.length) {
+      return user.providerData[0].providerId;
     }
 
     return 'unknown';

@@ -38,8 +38,7 @@ export default Ember.Object.extend(Waitable, {
         return this.waitFor_(auth.signInWithCustomToken(options.token));
 
       case 'anonymous':
-        return this.waitFor_(auth.signInAnonymously())
-            .then((user) => { return {user}; }); // normalize payload
+        return this.waitFor_(auth.signInAnonymously());
 
       // oauth providers e.g. 'twitter'
       default:
@@ -68,6 +67,9 @@ export default Ember.Object.extend(Waitable, {
     this._incrementWaiters();
     return promise.then((result) => {
       this._decrementWaiters();
+      if (result.user) {
+        return result.user;
+      }
       return result;
     }).catch((err) => {
       this._decrementWaiters();
