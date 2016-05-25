@@ -5,6 +5,8 @@ import stubFirebase from 'dummy/tests/helpers/stub-firebase';
 import unstubFirebase from 'dummy/tests/helpers/unstub-firebase';
 import createTestRef from 'dummy/tests/helpers/create-test-ref';
 
+const { getOwner } = Ember;
+
 describe('Integration: FirebaseAdapter - Queries', function() {
   var app, store, adapter, queryArray, ref;
 
@@ -15,7 +17,7 @@ describe('Integration: FirebaseAdapter - Queries', function() {
 
     ref = createTestRef('blogs/queries');
 
-    store = app.__container__.lookup('service:store');
+    store = getOwner(app).lookup('service:store');
     adapter = store.adapterFor('application');
     adapter._ref = ref;
     adapter._queueFlushDelay = false;

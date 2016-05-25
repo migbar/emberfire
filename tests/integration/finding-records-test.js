@@ -6,6 +6,8 @@ import stubFirebase from 'dummy/tests/helpers/stub-firebase';
 import unstubFirebase from 'dummy/tests/helpers/unstub-firebase';
 import createTestRef from 'dummy/tests/helpers/create-test-ref';
 
+const { getOwner } = Ember;
+
 describe("Integration: FirebaseAdapter - Finding Records", function() {
   var app, store, adapter;
 
@@ -14,7 +16,7 @@ describe("Integration: FirebaseAdapter - Finding Records", function() {
 
     app = startApp();
 
-    store = app.__container__.lookup("service:store");
+    store = getOwner(app).lookup("service:store");
     adapter = store.adapterFor('application');
     adapter._ref = createTestRef("blogs/normalized");
     adapter._queueFlushDelay = false;

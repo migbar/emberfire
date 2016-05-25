@@ -14,6 +14,8 @@ import stubFirebase from '../helpers/stub-firebase';
 import unstubFirebase from '../helpers/unstub-firebase';
 import createTestRef from '../helpers/create-test-ref';
 
+const { getOwner } = Ember;
+
 describe('Acceptance: /auth', function() {
   var application;
 
@@ -21,7 +23,7 @@ describe('Acceptance: /auth', function() {
     stubFirebase();
     application = startApp();
 
-    var provider = application.__container__.lookup('torii-provider:firebase');
+    var provider = getOwner(application).lookup('torii-provider:firebase');
     provider.set('firebase', createTestRef('acceptance'));
   });
 

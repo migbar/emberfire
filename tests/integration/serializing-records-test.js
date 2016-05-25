@@ -6,12 +6,14 @@ import stubFirebase from 'dummy/tests/helpers/stub-firebase';
 import unstubFirebase from 'dummy/tests/helpers/unstub-firebase';
 import createTestRef from 'dummy/tests/helpers/create-test-ref';
 
+const { getOwner } = Ember;
+
 describe('Integration: FirebaseSerializer - Serializing records', function() {
   var app, store, adapter, firebaseTestRef;
 
   var setupAdapter = function() {
     app = startApp();
-    store = app.__container__.lookup('service:store');
+    store = getOwner(app).lookup('service:store');
     adapter = store.adapterFor('application');
     adapter._ref = createTestRef('blogs/normalized');
     adapter._queueFlushDelay = false;
